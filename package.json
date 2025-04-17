@@ -1,18 +1,19 @@
 {
   "name": "uptime-monitor",
   "version": "1.0.0",
-  "description": "Website uptime monitoring dashboard",
+  "description": "Koyeb-compatible uptime monitor",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "preinstall": "npx npm@8 install --legacy-peer-deps",
+    "postinstall": "echo 'Koyeb installation complete'"
   },
   "dependencies": {
     "express": "4.18.2",
     "axios": "1.6.2"
   },
   "engines": {
-    "node": ">=16.0.0",
-    "npm": ">=8.0.0"
+    "node": "16.x",
+    "npm": "8.x"
   }
 }
