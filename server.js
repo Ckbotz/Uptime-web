@@ -22,7 +22,7 @@ app.get('/api/status', async (req, res) => {
     const results = await Promise.all(config.apps.map(async (app) => {
       try {
         const start = Date.now();
-        await axios.get(app.url, { timeout: 5000 });
+        await axios.head(app.url, { timeout: 5000 }); // More efficient than GET
         return {
           name: app.name,
           status: 'Alive',
@@ -33,7 +33,7 @@ app.get('/api/status', async (req, res) => {
         return {
           name: app.name,
           status: 'Down',
-          error: error.message,
+          error: error.code || 'Connection failed',
           timestamp: new Date().toISOString()
         };
       }
@@ -46,16 +46,10 @@ app.get('/api/status', async (req, res) => {
 
 // Health check endpoint
 app.get('/health', (req, res) => {
-  res.status(200).json({ status: "healthy" });
+  res.status(200).send('OK');
 });
 
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  console.log(`Monitoring ${config.apps.length} apps:`);
-  config.apps.forEach(app => console.log(`- ${app.name}: ${app.url}`));
-});
-
-process.on('unhandledRejection', (err) => {
-  console.error('Unhandled rejection:', err);
 });
