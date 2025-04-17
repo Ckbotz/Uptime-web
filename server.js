@@ -1,12 +1,16 @@
+// Error handling first
+process.on('unhandledRejection', (err) => {
+  console.error('Unhandled rejection:', err);
+});
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught exception:', err);
+});
+
 const express = require('express');
 const axios = require('axios');
-const path = require('path');
 const fs = require('fs');
 const app = express();
-const PORT = process.env.PORT || 5000;
-
-// Load config
-const config = JSON.parse(fs.readFileSync('./config.json'));
+const PORT = 5000;
 
 // Middleware
 app.use(express.static('public'));
@@ -16,25 +20,26 @@ app.use((req, res, next) => {
   next();
 });
 
-// Status check endpoint
+// Load config
+const config = JSON.parse(fs.readFileSync('./config.json'));
+
+// Status endpoint
 app.get('/api/status', async (req, res) => {
   try {
     const results = await Promise.all(config.apps.map(async (app) => {
       try {
         const start = Date.now();
-        await axios.head(app.url, { timeout: 5000 }); // More efficient than GET
+        await axios.head(app.url, { timeout: 5000 });
         return {
           name: app.name,
           status: 'Alive',
-          responseTime: Date.now() - start,
-          timestamp: new Date().toISOString()
+          responseTime: Date.now() - start
         };
       } catch (error) {
         return {
           name: app.name,
           status: 'Down',
-          error: error.code || 'Connection failed',
-          timestamp: new Date().toISOString()
+          error: error.code || 'Connection failed'
         };
       }
     }));
@@ -44,12 +49,11 @@ app.get('/api/status', async (req, res) => {
   }
 });
 
-// Health check endpoint
+// Health check
 app.get('/health', (req, res) => {
   res.status(200).send('OK');
 });
 
-// Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
