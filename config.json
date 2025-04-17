@@ -1,0 +1,44 @@
+{
+  "apps": [
+    {
+      "name": "Google",
+      "url": "https://www.google.com"
+    },
+    {
+      "name": "GitHub",
+      "url": "https://www.github.com"
+    },
+    {
+      "name": "Cloudflare",
+      "url": "https://www.cloudflare.com"
+    },
+    {
+      "name": "Twitter",
+      "url": "https://twitter.com"
+    },
+    {
+      "name": "YouTube",
+      "url": "https://youtube.com"
+    },
+    {
+      "name": "Reddit",
+      "url": "https://www.reddit.com"
+    },
+    {
+      "name": "Discord",
+      "url": "https://discord.com"
+    },
+    {
+      "name": "Netflix",
+      "url": "https://www.netflix.com"
+    },
+    {
+      "name": "Amazon",
+      "url": "https://www.amazon.com"
+    },
+    {
+      "name": "Wikipedia",
+      "url": "https://www.wikipedia.org"
+    }
+  ]
+}
