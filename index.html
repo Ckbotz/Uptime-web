@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uptime Monitor</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="title-container">
+                <h1 class="uptime-title">Uptime</h1>
+                <div class="status-circle big"></div>
+            </div>
+        </header>
+
+        <main>
+            <div class="app-list" id="appList"></div>
+        </main>
+
+        <footer>
+            <p>Last checked: <span id="lastChecked">Never</span></p>
+        </footer>
+    </div>
+
+    <script>
+        const appList = document.getElementById('appList');
+        const lastChecked = document.getElementById('lastChecked');
+        const updateInterval = 30000; // 30 seconds
+
+        function createAppElement(app) {
+            const appElement = document.createElement('div');
+            appElement.className = 'app-item';
+            
+            appElement.innerHTML = `
+                <div class="app-info">
+                    <span class="app-name">${app.name}</span>
+                    <span class="app-status ${app.status === 'Alive' ? 'alive' : 'down'}">
+                        ${app.status}
+                    </span>
+                    <div class="status-circle ${app.status === 'Alive' ? '' : 'down'}"></div>
+                </div>
+                ${app.status === 'Alive' ? 
+                    `<div class="response-time">${app.responseTime}ms</div>` : 
+                    `<div class="error">${app.error || 'Connection failed'}</div>`}
+            `;
+            
+            return appElement;
+        }
+
+        async function updateStatus() {
+            try {
+                const response = await fetch('/api/status');
+                const data = await response.json();
+                
+                appList.innerHTML = '';
+                data.apps.forEach(app => {
+                    appList.appendChild(createAppElement(app));
+                });
+                
+                lastChecked.textContent = new Date().toLocaleTimeString();
+                setTimeout(updateStatus, updateInterval);
+            } catch (error) {
+                console.error('Error:', error);
+                setTimeout(updateStatus, 5000); // Retry sooner if error
+            }
+        }
+
+        // Initial load
+        updateStatus();
+    </script>
+</body>
+</html>
